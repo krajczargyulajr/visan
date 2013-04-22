@@ -1,0 +1,3 @@
+function openAnalysisModule(workingArea, visan) {
+	
+};

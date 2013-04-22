@@ -1,0 +1,25 @@
+<script type="text/template" id="create-analysis-template">
+<div>
+<p>To create a new analysis, please select a name for your analysis, then provide some data that you'd like to analyise.</p>
+<p><label for="create-analysis-name">Name:</label><input type="text" id="create-analysis-name" /></p>
+</div>
+<div id="create-analysis-tabs">
+	<ul>
+		<li><a href="#upload-data-tab">Upload data</a></li>
+		<li><a href="#copy-and-paste-data-tab">Copy &amp; paste data</a></li>
+		<li><a href="#random-generate-data-tab">Randomly generate data</a></li>
+	</ul>
+	<div id="upload-data-tab">
+		<p>Functionality unavailable</p>
+	</div>
+	<div id="copy-and-paste-data-tab">
+		<p>Functionality unavailable</p>
+	</div>
+	<div id="random-generate-data-tab">
+		<p>Please select the number of rows and colums you would like to generate. Note: for performance reasons, generation is not allowed for datasets larger than 3 million rows and 30 columns.</p>
+		<p><label for="random-generate-rows">Rows:</label><input type="number" id="random-generate-rows" min="0" max="3000000" /></p>
+		<p><label for="random-generate-columns">Columns:</label><input type="number" id="random-generate-columns" min="0" max="30" /></p>
+		<p><button id="random-generate-button">Generate and create analysis</button></p>
+	</div>
+</div>
+</script>

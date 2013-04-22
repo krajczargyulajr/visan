@@ -1,0 +1,70 @@
+body {
+	font-size: 62.5%;
+	font-family: Helvetica, Arial, sans-serif;
+	padding: 0;
+	margin: 0;
+}
+
+div#visan-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 40px;
+	
+	background-color: rgb(235, 235, 235);
+	
+	text-align: right;
+}
+
+div#visan-header h1 {
+	padding: 0;
+	margin: 10px 20px 0 0;
+}
+
+div#visan-header h2 {
+	display: inline;
+	
+	text-align: left;
+	overflow: hidden;
+	
+	float: left;
+	padding: 0;
+	margin: 12px 0 0 15px;
+	text-transform: uppercase;
+}
+
+div.visan-working-area {
+	position: absolute;
+	top: 41px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+div.visan-working-area-hidden {
+	display: none;
+}
+
+/* div#analysis-dashboard-toolbox */ 
+.toolbox {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 110px;
+	bottom: 0;
+	background-color: rgb(235,235,235);
+}
+
+div.toolbox-group {
+	border-bottom: 1px solid grey;
+	padding: 10px;
+}
+
+div#analysis-dashboard-steps {
+	position: absolute;
+	top: 0;
+	left: 111px;
+	right: 0;
+	bottom: 0;
+}
