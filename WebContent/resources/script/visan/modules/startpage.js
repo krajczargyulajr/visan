@@ -2,7 +2,7 @@ function startPageModule(workingArea, visan) {
 	visan.title("Welcome");
 	
 	visan.loadTemplate("startpage", function(template) {
-		workingArea.html(template.find("#startpage-template").text());
+		workingArea.append(template);
 		
 		workingArea.find("a#create-analysis-link").click(function(e) {
 			e.preventDefault();
