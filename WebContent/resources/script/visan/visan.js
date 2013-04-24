@@ -4,6 +4,8 @@ function VISAN() {
 	var workingArea = $("<div />");
 	var workingAreaCache = [];
 	
+	var _self = this;
+	
 	function initializeEmptyWorkingArea() {
 		workingArea.addClass("visan-working-area");
 		body.append(workingArea);

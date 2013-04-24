@@ -5,6 +5,10 @@ body {
 	margin: 0;
 }
 
+.hidden {
+	display: none;
+}
+
 div#visan-header {
 	position: absolute;
 	top: 0;

@@ -18,8 +18,10 @@
 		<script type="text/javascript" src="./resources/script/kinetic-v4.3.3.js"></script>
 		<script type="text/javascript" src="./resources/script/crossfilter.js"></script>
 		<script type="text/javascript" src="./resources/script/mustache.js"></script>
+		<script type="text/javascript" src="./resources/script/d3.v3.min.js"></script>
 		
 		<script type="text/javascript" src="./resources/script/visan/visan.js"></script>
+		<script type="text/javascript" src="./resources/script/visan/datamanager.js"></script>
 		<script type="text/javascript" src="./resources/script/visan/modules/startpage.js"></script>
 		<script type="text/javascript" src="./resources/script/visan/modules/createanalysispage.js"></script>
 		<script type="text/javascript" src="./resources/script/visan/modules/openanalysispage.js"></script>
