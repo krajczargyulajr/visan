@@ -1,15 +1,15 @@
-function scatterPlot(options, dataManager, visan) {
+function scatterPlot(options, container, dataManager, visan) {
 	
 	var padding = 20;
 	
 	// get axes
-	var optionsContainer = options.optionsContainer;
-	var xAxis = optionsContainer.find("select.scatterplot-x").val();
-	var yAxis = optionsContainer.find("select.scatterplot-y").val();
+	// var optionsContainer = options.optionsContainer;
+	var xAxis = options.xAxis; // optionsContainer.find("select.scatterplot-x").val();
+	var yAxis = options.yAxis; // optionsContainer.find("select.scatterplot-y").val();
 	
 	// render canvas
 	var stage = new Kinetic.Stage({
-		container: options.container.get(0),
+		container: container.get(0),
 		width: options.width || 500,
 		height: options.height || 500
 	});
@@ -52,6 +52,9 @@ function scatterPlot(options, dataManager, visan) {
 scatterPlot.renderPlotCreateOptions = function(optionsContainer) {
 	optionsContainer.append($("<p />").text("Please select the X axis:")).append($("<select />").addClass("scatterplot-x").addClass("axis"));
 	optionsContainer.append($("<p />").text("Please select the Y axis:")).append($("<select />").addClass("scatterplot-y").addClass("axis"));
-	// axis x
-	// axis y
+	
+	return function(plotOptions, optionsContainer) {
+		plotOptions.xAxis = optionsContainer.find("select.scatterplot-x").val();
+		plotOptions.yAxis = optionsContainer.find("select.scatterplot-y").val();
+	};
 };

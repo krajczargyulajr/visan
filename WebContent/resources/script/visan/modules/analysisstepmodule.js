@@ -9,15 +9,25 @@ function analysisStepModule(workingArea, visan, options) {
 	dataManager.load(analysis.data);
 	var plotObjects = [];
 	
+	function createPlot(plotOptions) {
+		var plotDialog = $("<div />").attr("title", plotOptions.title);
+		plotDialog.appendTo(workingArea);
+		
+		plotObjects.push(new (window[plotOptions.type])(plotOptions, plotDialog, dataManager, visan));
+		
+		plotDialog.dialog({
+			width: plotOptions.width + 20,
+			height: plotOptions.height + 20
+		});
+	}
+	
 	visan.title((typeof analysis.title == "undefined" ? "Untitled analysis" : analysis.title));
 	
 	visan.loadTemplate("analysis-step", function(template) {
 		workingArea.append(template);
 		
 		workingArea.find("button#analysis-step-new-plot").button().click(function() {
-			// find available plots and add them as options
 			
-			// open new plot dialog
 			var dialog = workingArea.find("div#analysis-step-new-plot-dialog").clone();
 			var plotTypeSelect = dialog.find("select#new-plot-type");
 			for(var type in plottypes) {
@@ -27,6 +37,7 @@ function analysisStepModule(workingArea, visan, options) {
 			console.log("initialized plot type select");
 			
 			var optionsContainer = dialog.find("div#new-plot-options");
+			var plotCallback = undefined;
 			
 			plotTypeSelect.change(function() {
 				// find current selection and render options
@@ -35,10 +46,8 @@ function analysisStepModule(workingArea, visan, options) {
 				// do nothing if "empty" is selected
 				if(plotClassName == "empty") return;
 				
-				window[plotClassName].renderPlotCreateOptions(optionsContainer);
+				plotCallback = window[plotClassName].renderPlotCreateOptions(optionsContainer);
 				
-				// initialize options
-				// initialize axes
 				optionsContainer.find("select.axis").each(function() {
 					var axesSelect = $(this);
 					headers.forEach(function(item, index) {
@@ -56,25 +65,20 @@ function analysisStepModule(workingArea, visan, options) {
 						
 						if(plotClassName == "empty") return;
 						
-						var plotDialog = $("<div />").attr("title", "plotTitle");
-						plotDialog.appendTo(workingArea);
-						
 						var plotOptions = {
 							title: plotTitle,
 							type: plotClassName,
-							optionsContainer: optionsContainer,
-							container: plotDialog
+							width: 500,
+							height: 500
 						};
 						
+						plotCallback(plotOptions, optionsContainer);
+						
 						analysis.plots.push(plotOptions);
-						plotObjects.push(new (window[plotClassName])(plotOptions, dataManager, visan));
 						
 						$(this).dialog("close");
 						
-						plotDialog.dialog({
-							width: 500,
-							height: 500
-						});
+						createPlot(plotOptions);
 					},
 					"Cancel": function() {
 						$(this).dialog("close");
