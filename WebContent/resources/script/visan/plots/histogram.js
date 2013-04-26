@@ -48,7 +48,7 @@ function histogramPlot(options, container, dataManager, visan) {
 
 histogramPlot.renderPlotCreateOptions = function(optionsContainer) {
 	optionsContainer.append($("<p />").text("Select the axis: ")).append($("<select />").addClass("histogram-axis").addClass("axis"));
-	optionsContaienr.append($("<p />").text("Specify a bin size: ")).append($("<input />").attr({ type: "number", min: 0}).addClass("histogram-bin-size"));
+	optionsContainer.append($("<p />").text("Specify a bin size: ")).append($("<input />").attr({ type: "number", min: 0}).addClass("histogram-bin-size"));
 	
 	return function(plotOptions, optionsContainer) {
 		plotOptions.axis = optionsContainer.find("select.histogram-axis").val();
