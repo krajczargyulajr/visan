@@ -40,6 +40,15 @@ function startPageModule(workingArea, visan) {
 					left: 350,
 					width: 300,
 					height: 300
+				}, {
+					type: "histogram",
+					title: "Demo histogram",
+					axis: "Column 0",
+					binSize: 70,
+					top: 20,
+					left: 690,
+					width: 300,
+					height: 300
 				}]
 			});
 		});
