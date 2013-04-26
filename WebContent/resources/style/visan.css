@@ -72,3 +72,11 @@ div#analysis-dashboard-steps {
 	right: 0;
 	bottom: 0;
 }
+
+div#analysis-step-working-area {
+	position: absolute;
+	top: 0;
+	left: 115px;
+	right: 0;
+	bottom: 0;
+}
