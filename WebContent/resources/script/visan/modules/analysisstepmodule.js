@@ -3,6 +3,8 @@ function analysisStepModule(workingArea, visan, options) {
 	analysis.plots = analysis.plots || [];
 	var headers = analysis.data[0];
 	
+	var analysisWorkingArea = undefined;
+	
 	// create data manager
 	// var data = analysis.data.slice(0);
 	var dataManager = new DataManager();
@@ -13,25 +15,47 @@ function analysisStepModule(workingArea, visan, options) {
 		var plotDialog = $("<div />").attr("title", plotOptions.title);
 		plotDialog.appendTo(workingArea);
 		
-		plotObjects.push(new (window[plotOptions.type])(plotOptions, plotDialog, dataManager, visan));
+		plotObjects.push(new (window[plottypes[plotOptions.type].classname])(plotOptions, plotDialog, dataManager, visan));
+		
+		var top = 0, left = 0;
+		if(plotOptions.top) {
+			top = plotOptions.top;
+		}
+		
+		if(plotOptions.left) {
+			left = plotOptions.left;
+		}
 		
 		plotDialog.dialog({
 			width: plotOptions.width + 20,
-			height: plotOptions.height + 20
+			height: plotOptions.height + 20,
+			position: {
+				my: "left+" + left + " top+" + top,
+				at: "left top",
+				of: analysisWorkingArea
+			}
 		});
+		
+		console.log(plotDialog.dialog("option", "position"));
 	}
 	
 	visan.title((typeof analysis.title == "undefined" ? "Untitled analysis" : analysis.title));
 	
 	visan.loadTemplate("analysis-step", function(template) {
 		workingArea.append(template);
+		analysisWorkingArea = workingArea.find("div#analysis-step-working-area");
+		
+		// render exiting plots
+		analysis.plots.forEach(function(plotOptions) {
+			createPlot(plotOptions);
+		});
 		
 		workingArea.find("button#analysis-step-new-plot").button().click(function() {
 			
 			var dialog = workingArea.find("div#analysis-step-new-plot-dialog").clone();
 			var plotTypeSelect = dialog.find("select#new-plot-type");
 			for(var type in plottypes) {
-				plotTypeSelect.append($("<option />").attr("value", plottypes[type].classname).text(type));
+				plotTypeSelect.append($("<option />").attr("value", type).text(plottypes[type].displayName));
 			}
 			
 			console.log("initialized plot type select");
@@ -41,7 +65,8 @@ function analysisStepModule(workingArea, visan, options) {
 			
 			plotTypeSelect.change(function() {
 				// find current selection and render options
-				var plotClassName = $(this).val();
+				var plotType = $(this).val();
+				var plotClassName = (plotType != "empty" ? plottypes[type].classname : "empty");
 				
 				// do nothing if "empty" is selected
 				if(plotClassName == "empty") return;
@@ -67,9 +92,11 @@ function analysisStepModule(workingArea, visan, options) {
 						
 						var plotOptions = {
 							title: plotTitle,
-							type: plotClassName,
+							type: plotType,
 							width: 500,
-							height: 500
+							height: 500,
+							top: 10,
+							left: 100
 						};
 						
 						plotCallback(plotOptions, optionsContainer);

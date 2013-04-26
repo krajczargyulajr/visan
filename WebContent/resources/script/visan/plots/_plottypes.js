@@ -1,5 +1,6 @@
 var plottypes = {
-	"Scatterplot": {
+	"scatterplot": {
+		displayName: "Scatterplot",
 		classname: "scatterPlot"
 	}
 };
