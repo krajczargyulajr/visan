@@ -49,6 +49,19 @@ function startPageModule(workingArea, visan) {
 					left: 690,
 					width: 300,
 					height: 300
+				}],
+				highlights: [{
+					type: "selection",
+					axis1: {
+						axis: "Column 3",
+						from: 53,
+						to: 222
+					},
+					axis2: {
+						axis: "Column 4",
+						from: 100,
+						to: 200
+					}
 				}]
 			});
 		});

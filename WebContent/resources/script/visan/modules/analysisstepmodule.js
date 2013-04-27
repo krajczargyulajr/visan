@@ -8,6 +8,7 @@ function analysisStepModule(workingArea, visan, options) {
 	var dataManager = new VISAN.DataManager();
 	dataManager.load(analysis.data);
 	var plotObjects = [];
+	var highlightObjects = [];
 	
 	function createPlot(plotOptions) {
 		var plotDialog = $("<div />").attr("title", plotOptions.title);
@@ -35,6 +36,16 @@ function analysisStepModule(workingArea, visan, options) {
 		});
 		
 		console.log(plotDialog.dialog("option", "position"));
+	}
+	
+	function createHighlight(highlightOptions) {
+		switch(highlightOptions.type) {
+		case "selection":
+			var hl = new VISAN.Highlight.Selection(highlightOptions, dataManager);
+			hl.highlight();
+			highlightObjects.push(hl);
+			break;
+		}
 	}
 	
 	function newPlotEventHandler() {
@@ -106,6 +117,11 @@ function analysisStepModule(workingArea, visan, options) {
 	visan.loadTemplate("analysis-step", function(template) {
 		workingArea.append(template);
 		analysisWorkingArea = workingArea.find("div#analysis-step-working-area");
+
+		// render existing highlights
+		analysis.highlights.forEach(function(highlightOptions) {
+			createHighlight(highlightOptions);
+		});
 		
 		// render existing plots
 		analysis.plots.forEach(function(plotOptions) {
