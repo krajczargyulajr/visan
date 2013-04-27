@@ -30,6 +30,16 @@ function scatterPlot(options, container, dataManager, visan) {
 	this.draw = function() {
 		var scXScale = d3.scale.linear().domain([0, 300]).range([padding, 500 - padding]);
 		var scYScale = d3.scale.linear().domain([0, 300]).range([500 - padding, padding]);
+		// var scXScale = d3.scale.linear().domain([0, 300]).range([padding, 500 - padding]);
+		// var scYScale = d3.scale.linear().domain([0, 300]).range([500 - padding, padding]);
+		var scXScale = new VISAN.Scale({
+			range: [padding, 500 - padding],
+			domain: [0, 300]
+		});
+		var scYScale = new VISAN.Scale({
+			range: [500 - padding, padding],
+			domain: [0, 300]
+		});
 
 		var context = shapeLayer.getContext("2d");
 		
@@ -41,8 +51,10 @@ function scatterPlot(options, container, dataManager, visan) {
 				context.fillStyle = "#000000";
 			}
 			if(i < 5) console.log(scXScale(cur[xAxis]) + "," + scYScale(cur[yAxis]));
+			if(i < 5) console.log(scXScale.get(cur[xAxis]) + "," + scYScale.get(cur[yAxis]));
 			i++;
 			context.fillRect(scXScale(cur[xAxis]), scYScale(cur[yAxis]), 2,2);
+			context.fillRect(scXScale.get(cur[xAxis]), scYScale.get(cur[yAxis]), 2,2);
 		});
 	};
 	
