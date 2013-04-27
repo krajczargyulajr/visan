@@ -46,5 +46,49 @@ var VISAN = {}; (function() {
 })();
 
 (function() {
+	/**
+	 * Scale constructor
+	 * @constructor
+	 * @param {Object} options
+	 */
+	VISAN.Scale = function(options) {
+		this.range = options.range;
+		this.domain = options.domain;
+		
+		this._calculateRatio();
+	};
 	
+	VISAN.Scale.prototype = {
+		/**
+		 * Calculates the ratio required for range to domain mapping
+		 */
+		_calculateRatio: function() {
+			// (range.to - range.from) / (domain.to - domain.from)
+			this.ratio = (this.range[1] - this.range[0]) / (this.domain[1] - this.domain[0]);
+		},
+		/**
+		 * Maps {number} from range to domain.
+		 * @param {Number} number the number on the scale of range
+		 * @returns {Number} the mapped value of number on the scale of domain
+		 */
+		get: function(number) {
+			return number * this.ratio;
+		},
+		/**
+		 * Sets a new range for this scale.
+		 * @param {Array} rangeArray The new range for this scale in the form of a 2D array as [from, to]
+		 */
+		range: function(rangeArray) {
+			this.range = rangeArray;
+			this._calculateRatio();
+		},
+		/**
+		 * Sets a new domain for this scale
+		 * @param {Array} domainArray The new domain for this scale in the form of a 2D array as [from, to]
+		 */
+		domain: function(domainArray) {
+			this.domain = domainArray;
+			this._calculateRatio();
+		}
+	};
 })();
