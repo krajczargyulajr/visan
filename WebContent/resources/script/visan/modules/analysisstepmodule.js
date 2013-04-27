@@ -5,8 +5,6 @@ function analysisStepModule(workingArea, visan, options) {
 	
 	var analysisWorkingArea = undefined;
 	
-	// create data manager
-	// var data = analysis.data.slice(0);
 	var dataManager = new DataManager();
 	dataManager.load(analysis.data);
 	var plotObjects = [];
@@ -109,7 +107,7 @@ function analysisStepModule(workingArea, visan, options) {
 		workingArea.append(template);
 		analysisWorkingArea = workingArea.find("div#analysis-step-working-area");
 		
-		// render exiting plots
+		// render existing plots
 		analysis.plots.forEach(function(plotOptions) {
 			createPlot(plotOptions);
 		});
