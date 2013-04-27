@@ -52,8 +52,9 @@ var VISAN = {}; (function() {
 	 * @param {Object} options
 	 */
 	VISAN.Scale = function(options) {
-		this.range = options.range;
-		this.domain = options.domain;
+		this._range = options.range;
+		this._domain = options.domain;
+		this._debug = options.debug ? true : false;
 		
 		this._calculateRatio();
 	};
@@ -64,26 +65,25 @@ var VISAN = {}; (function() {
 		 */
 		_calculateRatio: function() {
 			// (range.to - range.from) / (domain.to - domain.from)
-			this.ratio = (this.range[1] - this.range[0]) / (this.domain[1] - this.domain[0]);
-			this.ratio = (this.domain[1] - this.domain[0]) / (this.range[1] - this.range[0]);
+			this._ratio = (this._range[1] - this._range[0]) / (this._domain[1] - this._domain[0]);
+			if(this._debug) { console.log("[V.Scale] Ratio: " + this._ratio); }
 		},
 		/**
-		 * Maps {number} from range to domain.
-		 * @param {Number} number the number on the scale of range
-		 * @returns {Number} the mapped value of number on the scale of domain
 		 * Maps {number} from domain to range.
 		 * @param {Number} number The number on the scale of domain
 		 * @returns {Number} The mapped value of number on the scale of range
 		 */
 		get: function(number) {
-			return number * this.ratio;
+			var num = this._range[0] + number * this._ratio
+			if(this._debug) { console.log("[V.Scale] Number: " + num); }
+			return num;
 		},
 		/**
 		 * Sets a new range for this scale.
 		 * @param {Array} rangeArray The new range for this scale in the form of a 2D array as [from, to]
 		 */
 		range: function(rangeArray) {
-			this.range = rangeArray;
+			this._range = rangeArray;
 			this._calculateRatio();
 		},
 		/**
@@ -91,7 +91,7 @@ var VISAN = {}; (function() {
 		 * @param {Array} domainArray The new domain for this scale in the form of a 2D array as [from, to]
 		 */
 		domain: function(domainArray) {
-			this.domain = domainArray;
+			this._domain = domainArray;
 			this._calculateRatio();
 		}
 	};
