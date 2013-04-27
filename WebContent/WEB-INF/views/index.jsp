@@ -35,7 +35,7 @@
 		
 		<script type="text/javascript">
 		$(function() {
-			var APP = new VISAN();
+			var APP = new VISAN.Application();
 			APP.run();
 		});
 		</script>
