@@ -11,7 +11,11 @@ function histogramPlot(options, container, dataManager, visan) {
 	var columnWidth = 300 / orderedDataLength - 2;
 	var topHeight = orderedData.top(1)[0].value;
 
-	var heightScale = d3.scale.linear().domain([0, topHeight]).range([0, options.height]);
+	// var heightScale = d3.scale.linear().domain([0, topHeight]).range([0, options.height]);
+	var heightScale = new VISAN.Scale({
+		domain: [0, topHeight],
+		range: [0, options.height]
+	});
 
 	var stage = new Kinetic.Stage({
 		container: container.get(0),
@@ -23,7 +27,7 @@ function histogramPlot(options, container, dataManager, visan) {
 
 	for(var i = 0; i < orderedDataLength; i++) {
 		var cur = orderedDataArray[i];
-		var curHeight = heightScale(cur.value);
+		var curHeight = heightScale.get(cur.value);
 
 		var rect = new Kinetic.Rect({
 			x: (i * (columnWidth + 2)),
