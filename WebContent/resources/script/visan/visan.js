@@ -65,11 +65,15 @@ var VISAN = {}; (function() {
 		_calculateRatio: function() {
 			// (range.to - range.from) / (domain.to - domain.from)
 			this.ratio = (this.range[1] - this.range[0]) / (this.domain[1] - this.domain[0]);
+			this.ratio = (this.domain[1] - this.domain[0]) / (this.range[1] - this.range[0]);
 		},
 		/**
 		 * Maps {number} from range to domain.
 		 * @param {Number} number the number on the scale of range
 		 * @returns {Number} the mapped value of number on the scale of domain
+		 * Maps {number} from domain to range.
+		 * @param {Number} number The number on the scale of domain
+		 * @returns {Number} The mapped value of number on the scale of range
 		 */
 		get: function(number) {
 			return number * this.ratio;
