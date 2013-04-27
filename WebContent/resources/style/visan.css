@@ -9,6 +9,10 @@ body {
 	display: none;
 }
 
+.ui-dialog .ui-dialog-content {
+	padding: 0;
+}
+
 div#visan-header {
 	position: absolute;
 	top: 0;

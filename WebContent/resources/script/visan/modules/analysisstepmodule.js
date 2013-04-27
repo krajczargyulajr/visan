@@ -27,8 +27,8 @@ function analysisStepModule(workingArea, visan, options) {
 		}
 		
 		plotDialog.dialog({
-			width: plotOptions.width + 20,
-			height: plotOptions.height + 20,
+			width: plotOptions.width,
+			height: plotOptions.height + 30,
 			position: {
 				my: "left+" + left + " top+" + top,
 				at: "left top",
