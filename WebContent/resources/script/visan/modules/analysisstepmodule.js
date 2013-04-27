@@ -5,7 +5,7 @@ function analysisStepModule(workingArea, visan, options) {
 	
 	var analysisWorkingArea = undefined;
 	
-	var dataManager = new DataManager();
+	var dataManager = new VISAN.DataManager();
 	dataManager.load(analysis.data);
 	var plotObjects = [];
 	
