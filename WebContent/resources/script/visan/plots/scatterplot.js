@@ -18,9 +18,14 @@ function scatterPlot(options, container, dataManager, visan) {
 		clearBeforeDraw: false
 	});
 	
+	var axisLayer = new Kinetic.Layer({
+		clearBeforeDraw: false
+	});
+	
 	var selectionLayer = new Kinetic.Layer();
 	
 	stage.add(shapeLayer);
+	stage.add(axisLayer);
 	stage.add(selectionLayer);
 	
 	var dataDimension1 = dataManager.getDimension(function(d) { return d[xAxis]; });
@@ -28,8 +33,6 @@ function scatterPlot(options, container, dataManager, visan) {
 	
 	// required
 	this.draw = function() {
-		// var scXScale = d3.scale.linear().domain([0, 300]).range([padding, 500 - padding]);
-		// var scYScale = d3.scale.linear().domain([0, 300]).range([500 - padding, padding]);
 		var scXScale = new VISAN.Scale({
 			range: [padding, 500 - padding],
 			domain: [0, 300]
@@ -41,6 +44,9 @@ function scatterPlot(options, container, dataManager, visan) {
 
 		var context = shapeLayer.getContext("2d");
 		
+		new VISAN.Axis({ scale: scXScale, orientation: VISAN.AxisOrientation.BOTTOM, padding: 25 }).draw(axisLayer.getCanvas());
+		new VISAN.Axis({ scale: scYScale, orientation: VISAN.AxisOrientation.LEFT, padding: 25 }).draw(axisLayer.getCanvas());
+		
 		var i = 0;
 		dataManager.getData().forEach(function(cur) {
 			if(cur._selected) {
@@ -48,7 +54,7 @@ function scatterPlot(options, container, dataManager, visan) {
 			} else {
 				context.fillStyle = "#000000";
 			}
-			if(i < 5) console.log(scXScale.get(cur[xAxis]) + "," + scYScale.get(cur[yAxis]));
+			if(i < 5) console.log(cur[xAxis] + "," + cur[yAxis]);
 			i++;
 			context.fillRect(scXScale.get(cur[xAxis]), scYScale.get(cur[yAxis]), 2,2);
 		});

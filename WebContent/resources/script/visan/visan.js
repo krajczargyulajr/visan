@@ -96,3 +96,84 @@ var VISAN = {}; (function() {
 		}
 	};
 })();
+
+(function() {
+	
+	VISAN.AxisOrientation = {
+		LEFT: 0,
+		RIGHT: 1,
+		TOP: 2,
+		BOTTOM: 3
+	};
+	
+	VISAN.Axis = function(options) {
+		this._scale = options.scale;
+		this._orientation = options.orientation; // left, right, top, bottom
+		this._description = options.description;
+		this._padding = options.padding; 
+	};
+	
+	VISAN.Axis.prototype = {
+		draw: function(canvas) {
+			var canvasWidth = canvas.getWidth();
+			var canvasHeight = canvas.getHeight();
+			var context = canvas.getContext("2d");
+			var from = this._scale._domain[0], to = this._scale._domain[1];
+			
+			switch(this._orientation) {
+			case VISAN.AxisOrientation.LEFT:
+				context.beginPath();
+				context.moveTo(this._padding - 5, this._padding);
+				context.lineTo(this._padding, this._padding);
+				context.lineTo(this._padding, canvasHeight - this._padding);
+				context.lineTo(this._padding - 5, canvasHeight - this._padding);
+				context.stroke();
+				
+				var labelSize = context.measureText(to);
+				context.textBaseline = "middle";
+				context.fillText(to, this._padding - 7 - labelSize.width, this._padding);
+				labelSize = context.measureText(from);
+				context.fillText(from, this._padding - 7 - labelSize.width, canvasHeight - this._padding);
+				break;
+			case VISAN.AxisOrientation.RIGHT:
+				context.beginPath();
+				context.moveTo(canvasWidth - (this._padding - 5), this._padding);
+				context.lineTo(canvasWidth - this._padding, this._padding);
+				context.lineTo(canvasWidth - this._padding, canvasHeight - this._padding);
+				context.lineTo(canvasWidth - (this._padding - 5), canvasHeight - this._padding);
+				context.stroke();
+				
+				context.textBaseline = "middle";
+				context.fillText(to, canvasWidth - this._padding + 7, this._padding);
+				context.fillText(from, canvasWidth - this._padding + 7, canvasHeight - this._padding);
+				break;
+			case VISAN.AxisOrientation.TOP:
+				context.beginPath();
+				context.moveTo(this._padding, this._padding - 5);
+				context.lineTo(this._padding, this._padding);
+				context.lineTo(canvasWidth - this._padding, this._padding);
+				context.lineTo(canvasWidth - this._padding, this._padding - 5);
+				context.stroke();
+				
+				context.textAlign = "center";
+				context.textBaseline = "alphabetic";
+				context.fillText(to, canvasWidth - this._padding, this._padding - 7);
+				context.fillText(from, this._padding, this._padding - 7);
+				break;
+			case VISAN.AxisOrientation.BOTTOM:
+				context.beginPath();
+				context.moveTo(this._padding, canvasHeight - (this._padding - 5));
+				context.lineTo(this._padding, canvasHeight - this._padding);
+				context.lineTo(canvasWidth - this._padding, canvasHeight - this._padding);
+				context.lineTo(canvasWidth - this._padding, canvasHeight - (this._padding - 5));
+				context.stroke();
+				
+				context.textAlign = "hanging";
+				context.textBaseline = "alphabetic";
+				context.fillText(to, canvasWidth - this._padding, canvasHeight - this._padding + 14);
+				context.fillText(from, this._padding, canvasHeight - this._padding + 14);
+				break;
+			}
+		}
+	};
+})();
