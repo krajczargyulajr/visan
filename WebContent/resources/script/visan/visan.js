@@ -66,7 +66,6 @@ var VISAN = {}; (function() {
 		 * Calculates the ratio required for range to domain mapping
 		 */
 		_calculateRatio: function() {
-			// (range.to - range.from) / (domain.to - domain.from)
 			this._ratio = (this._range[1] - this._range[0]) / (this._domain[1] - this._domain[0]);
 			if(this._debug) { console.log("[V.Scale] Ratio: " + this._ratio); }
 		},
@@ -76,7 +75,7 @@ var VISAN = {}; (function() {
 		 * @returns {Number} The mapped value of number on the scale of range
 		 */
 		get: function(number) {
-			var num = this._range[0] + number * this._ratio
+			var num = this._range[0] + number * this._ratio;
 			if(this._debug) { console.log("[V.Scale] Number: " + num); }
 			return num;
 		},

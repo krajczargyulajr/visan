@@ -3,9 +3,8 @@
 		this._padding = 20;
 		
 		// get axes
-		// var optionsContainer = options.optionsContainer;
-		this._xAxis = options.xAxis; // optionsContainer.find("select.scatterplot-x").val();
-		this._yAxis = options.yAxis; // optionsContainer.find("select.scatterplot-y").val();
+		this._xAxis = options.xAxis;
+		this._yAxis = options.yAxis;
 		
 		// render canvas
 		this._stage = new Kinetic.Stage({
@@ -54,7 +53,6 @@
 			new VISAN.Axis({ scale: scXScale, orientation: VISAN.AxisOrientation.BOTTOM, padding: 25 }).draw(this._axisLayer.getCanvas());
 			new VISAN.Axis({ scale: scYScale, orientation: VISAN.AxisOrientation.LEFT, padding: 25 }).draw(this._axisLayer.getCanvas());
 			
-			// var i = 0;
 			var _ = this;
 			this._dataManager.getData().forEach(function(cur) {
 				if(cur._selected) {
@@ -62,8 +60,7 @@
 				} else {
 					context.fillStyle = "#000000";
 				}
-				// if(i < 5) console.log(cur[_._xAxis] + "," + cur[_._yAxis]);
-				// i++;
+				
 				context.fillRect(scXScale.get(cur[_._xAxis]), scYScale.get(cur[_._yAxis]), 2,2);
 			});
 		}
