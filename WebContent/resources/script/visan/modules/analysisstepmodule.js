@@ -41,7 +41,7 @@
 			var plotDialog = $("<div />").attr("title", plotOptions.title);
 			plotDialog.appendTo(this._workingArea);
 			
-			this._plotObjects.push(new (window[plottypes[plotOptions.type].classname])(plotOptions, plotDialog, this._dataManager, this._application));
+			this._plotObjects.push(new (plottypes[plotOptions.type].classname)(plotOptions, plotDialog, this._dataManager, this._application));
 			
 			var top = 0, left = 0;
 			if(plotOptions.top) {

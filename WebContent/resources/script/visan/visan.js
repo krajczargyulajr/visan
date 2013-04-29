@@ -44,6 +44,7 @@ var VISAN = {}; (function() {
 
 (function() {
 	VISAN.Modules = {};
+	VISAN.Plots = {};
 })();
 
 (function() {

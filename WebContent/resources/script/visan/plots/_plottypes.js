@@ -1,10 +1,10 @@
 var plottypes = {
 	"scatterplot": {
 		displayName: "Scatterplot",
-		classname: "scatterPlot"
+		classname: VISAN.Plots.Scatterplot
 	},
 	"histogram": {
 		displayName: "Histogram",
-		classname: "histogramPlot"
+		classname: histogramPlot
 	}
 };

@@ -1,74 +1,71 @@
-function scatterPlot(options, container, dataManager, visan) {
-	
-	var padding = 20;
-	
-	// get axes
-	// var optionsContainer = options.optionsContainer;
-	var xAxis = options.xAxis; // optionsContainer.find("select.scatterplot-x").val();
-	var yAxis = options.yAxis; // optionsContainer.find("select.scatterplot-y").val();
-	
-	// render canvas
-	var stage = new Kinetic.Stage({
-		container: container.get(0),
-		width: options.width || 500,
-		height: options.height || 500
-	});
-	
-	var shapeLayer = new Kinetic.Layer({
-		clearBeforeDraw: false
-	});
-	
-	var axisLayer = new Kinetic.Layer({
-		clearBeforeDraw: false
-	});
-	
-	var selectionLayer = new Kinetic.Layer();
-	
-	stage.add(shapeLayer);
-	stage.add(axisLayer);
-	stage.add(selectionLayer);
-	
-	var dataDimension1 = dataManager.getDimension(function(d) { return d[xAxis]; });
-	var dataDimension2 = dataManager.getDimension(function(d) { return d[yAxis]; });
-	
-	// required
-	this.draw = function() {
-		var scXScale = new VISAN.Scale({
-			range: [padding, 500 - padding],
-			domain: [0, 300]
-		});
-		var scYScale = new VISAN.Scale({
-			range: [500 - padding, padding],
-			domain: [0, 300]
-		});
-
-		var context = shapeLayer.getContext("2d");
+(function() {
+	VISAN.Plots.Scatterplot = function(options, container, dataManager, visan) {
+		this._padding = 20;
 		
-		new VISAN.Axis({ scale: scXScale, orientation: VISAN.AxisOrientation.BOTTOM, padding: 25 }).draw(axisLayer.getCanvas());
-		new VISAN.Axis({ scale: scYScale, orientation: VISAN.AxisOrientation.LEFT, padding: 25 }).draw(axisLayer.getCanvas());
+		// get axes
+		// var optionsContainer = options.optionsContainer;
+		this._xAxis = options.xAxis; // optionsContainer.find("select.scatterplot-x").val();
+		this._yAxis = options.yAxis; // optionsContainer.find("select.scatterplot-y").val();
 		
-		var i = 0;
-		dataManager.getData().forEach(function(cur) {
-			if(cur._selected) {
-				context.fillStyle = "#ff0000";
-			} else {
-				context.fillStyle = "#000000";
-			}
-			if(i < 5) console.log(cur[xAxis] + "," + cur[yAxis]);
-			i++;
-			context.fillRect(scXScale.get(cur[xAxis]), scYScale.get(cur[yAxis]), 2,2);
+		// render canvas
+		this._stage = new Kinetic.Stage({
+			container: container.get(0),
+			width: options.width || 500,
+			height: options.height || 500
 		});
+		
+		this._shapeLayer = new Kinetic.Layer({
+			clearBeforeDraw: false
+		});
+		
+		this._axisLayer = new Kinetic.Layer({
+			clearBeforeDraw: false
+		});
+		
+		this._selectionLayer = new Kinetic.Layer();
+		
+		this._stage.add(this._shapeLayer);
+		this._stage.add(this._axisLayer);
+		this._stage.add(this._selectionLayer);
+		
+		var dataDimension1 = dataManager.getDimension(function(d) { return d[this._xAxis]; });
+		var dataDimension2 = dataManager.getDimension(function(d) { return d[this._yAxis]; });
+		
+		this._dataManager = dataManager;
+		
+		this.draw();
 	};
 	
-	this.draw();
-};
+	VISAN.Plots.Scatterplot.prototype = {
+		draw: function() {
+			var padding = this._padding;
+			
+			var scXScale = new VISAN.Scale({
+				range: [padding, 500 - padding],
+				domain: [0, 300]
+			});
+			var scYScale = new VISAN.Scale({
+				range: [500 - padding, padding],
+				domain: [0, 300]
+			});
 
-scatterPlot.renderPlotCreateOptions = function(optionsContainer) {
-	optionsContainer.append($("<p />").text("Please select the X axis:")).append($("<select />").addClass("scatterplot-x").addClass("axis"));
-	optionsContainer.append($("<p />").text("Please select the Y axis:")).append($("<select />").addClass("scatterplot-y").addClass("axis"));
-	
-	return function(plotOptions, optionsContainer) {
-		plotOptions.xAxis = optionsContainer.find("select.scatterplot-x").val();
-		plotOptions.yAxis = optionsContainer.find("select.scatterplot-y").val();
+			var context = this._shapeLayer.getContext("2d");
+			
+			new VISAN.Axis({ scale: scXScale, orientation: VISAN.AxisOrientation.BOTTOM, padding: 25 }).draw(this._axisLayer.getCanvas());
+			new VISAN.Axis({ scale: scYScale, orientation: VISAN.AxisOrientation.LEFT, padding: 25 }).draw(this._axisLayer.getCanvas());
+			
+			// var i = 0;
+			var _ = this;
+			this._dataManager.getData().forEach(function(cur) {
+				if(cur._selected) {
+					context.fillStyle = "#ff0000";
+				} else {
+					context.fillStyle = "#000000";
+				}
+				// if(i < 5) console.log(cur[_._xAxis] + "," + cur[_._yAxis]);
+				// i++;
+				context.fillRect(scXScale.get(cur[_._xAxis]), scYScale.get(cur[_._yAxis]), 2,2);
+			});
+		}
 	};
-};
+})();

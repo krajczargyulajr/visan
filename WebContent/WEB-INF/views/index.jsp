@@ -28,9 +28,9 @@
 		<script type="text/javascript" src="./resources/script/visan/modules/analysisstepmodule.js"></script>
 		
 		<!-- Plot types -->
-		<script type="text/javascript" src="./resources/script/visan/plots/_plottypes.js"></script>
 		<script type="text/javascript" src="./resources/script/visan/plots/scatterplot.js"></script>
 		<script type="text/javascript" src="./resources/script/visan/plots/histogram.js"></script>
+		<script type="text/javascript" src="./resources/script/visan/plots/_plottypes.js"></script>
 		
 		<script type="text/javascript">
 		$(function() {
