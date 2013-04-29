@@ -43,6 +43,10 @@ var VISAN = {}; (function() {
 })();
 
 (function() {
+	VISAN.Modules = {};
+})();
+
+(function() {
 	/**
 	 * Scale constructor
 	 * @constructor

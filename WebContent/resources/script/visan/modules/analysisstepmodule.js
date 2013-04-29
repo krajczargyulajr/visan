@@ -1,133 +1,142 @@
-function analysisStepModule(workingArea, visan, options) {
-	var analysis = (typeof options == "undefined") ? {} : options;
-	analysis.plots = analysis.plots || [];
-	var headers = analysis.data[0];
-	
-	var analysisWorkingArea = undefined;
-	
-	var dataManager = new VISAN.DataManager();
-	dataManager.load(analysis.data);
-	var plotObjects = [];
-	var highlightObjects = [];
-	
-	function createPlot(plotOptions) {
-		var plotDialog = $("<div />").attr("title", plotOptions.title);
-		plotDialog.appendTo(workingArea);
+(function() {
+	VISAN.Modules.AnalysisStepModule = function(workingArea, visan, options) {
+		this._analysis = (typeof options == "undefined") ? {} : options;
+		this._analysis.plots = this._analysis.plots || [];
+		this._headers = this._analysis.data[0];
 		
-		plotObjects.push(new (window[plottypes[plotOptions.type].classname])(plotOptions, plotDialog, dataManager, visan));
+		this._application = visan;
+		this._workingArea = workingArea;
+		this._analysisWorkingArea = undefined;
 		
-		var top = 0, left = 0;
-		if(plotOptions.top) {
-			top = plotOptions.top;
-		}
+		this._dataManager = new VISAN.DataManager();
+		this._dataManager.load(this._analysis.data);
 		
-		if(plotOptions.left) {
-			left = plotOptions.left;
-		}
+		this._plotObjects = [];
+		this._highlightObjects = [];
 		
-		plotDialog.dialog({
-			width: plotOptions.width,
-			height: plotOptions.height + 30,
-			position: {
-				my: "left+" + left + " top+" + top,
-				at: "left top",
-				of: analysisWorkingArea
-			}
-		});
+		var _ = this;
 		
-		console.log(plotDialog.dialog("option", "position"));
-	}
-	
-	function createHighlight(highlightOptions) {
-		switch(highlightOptions.type) {
-		case "selection":
-			var hl = new VISAN.Highlight.Selection(highlightOptions, dataManager);
-			hl.highlight();
-			highlightObjects.push(hl);
-			break;
-		}
-	}
-	
-	function newPlotEventHandler() {
+		visan.title((typeof this._analysis.title == "undefined" ? "Untitled analysis" : this._analysis.title));
 		
-		var dialog = workingArea.find("div#analysis-step-new-plot-dialog").clone();
-		var plotTypeSelect = dialog.find("select#new-plot-type");
-		for(var type in plottypes) {
-			plotTypeSelect.append($("<option />").attr("value", type).text(plottypes[type].displayName));
-		}
-		
-		console.log("initialized plot type select");
-		
-		var optionsContainer = dialog.find("div#new-plot-options");
-		var plotCallback = undefined;
-		
-		plotTypeSelect.change(function() {
-			// find current selection and render options
-			var plotType = $(this).find("option:selected").val();
-			var plotClassName = (plotType != "empty" ? plottypes[plotType].classname : "empty");
-			
-			// do nothing if "empty" is selected
-			if(plotClassName == "empty") return;
-			
-			plotCallback = window[plotClassName].renderPlotCreateOptions(optionsContainer);
-			
-			optionsContainer.find("select.axis").each(function() {
-				var axesSelect = $(this);
-				headers.forEach(function(item, index) {
-					$("<option />").val(item).text(item).appendTo(axesSelect);
-				});
+		visan.loadTemplate("analysis-step", function(template) {
+			_._workingArea.append(template);
+			_._analysisWorkingArea = _._workingArea.find("div#analysis-step-working-area");
+
+			// render existing highlights
+			_._analysis.highlights.forEach(function(highlightOptions) {
+				_.createHighlight(highlightOptions);
 			});
-		});
-		
-		dialog.dialog({
-			modal: true,
-			buttons: {
-				"Create plot": function() {
-					var plotTitle = dialog.find("input#new-plot-title").val();
-					var plotType = plotTypeSelect.find("option:selected").val();
-					
-					if(plotType == "empty") return;
-					
-					var plotOptions = {
-						title: plotTitle,
-						type: plotType,
-						width: 500,
-						height: 500,
-						top: 10,
-						left: 100
-					};
-					
-					plotCallback(plotOptions, optionsContainer);
-					
-					analysis.plots.push(plotOptions);
-					
-					$(this).dialog("close");
-					
-					createPlot(plotOptions);
-				},
-				"Cancel": function() {
-					$(this).dialog("close");
-				}
-			}
+			
+			// render existing plots
+			_._analysis.plots.forEach(function(plotOptions) {
+				_.createPlot(plotOptions);
+			});
+			
+			_._workingArea.find("button#analysis-step-new-plot").button().click(_.newPlotEventHandler);
 		});
 	};
 	
-	visan.title((typeof analysis.title == "undefined" ? "Untitled analysis" : analysis.title));
-	
-	visan.loadTemplate("analysis-step", function(template) {
-		workingArea.append(template);
-		analysisWorkingArea = workingArea.find("div#analysis-step-working-area");
-
-		// render existing highlights
-		analysis.highlights.forEach(function(highlightOptions) {
-			createHighlight(highlightOptions);
-		});
-		
-		// render existing plots
-		analysis.plots.forEach(function(plotOptions) {
-			createPlot(plotOptions);
-		});
-		
-		workingArea.find("button#analysis-step-new-plot").button().click(newPlotEventHandler);
-	});
-};
+	VISAN.Modules.AnalysisStepModule.prototype = {
+		createPlot: function(plotOptions) {
+			var plotDialog = $("<div />").attr("title", plotOptions.title);
+			plotDialog.appendTo(this._workingArea);
+			
+			this._plotObjects.push(new (window[plottypes[plotOptions.type].classname])(plotOptions, plotDialog, this._dataManager, this._application));
+			
+			var top = 0, left = 0;
+			if(plotOptions.top) {
+				top = plotOptions.top;
+			}
+			
+			if(plotOptions.left) {
+				left = plotOptions.left;
+			}
+			
+			plotDialog.dialog({
+				width: plotOptions.width,
+				height: plotOptions.height + 30,
+				position: {
+					my: "left+" + left + " top+" + top,
+					at: "left top",
+					of: this._analysisWorkingArea
+				}
+			});
+			
+			console.log(plotDialog.dialog("option", "position"));
+		},
+		createHighlight: function(highlightOptions) {
+			switch(highlightOptions.type) {
+			case "selection":
+				var hl = new VISAN.Highlight.Selection(highlightOptions, this._dataManager);
+				hl.highlight();
+				this._highlightObjects.push(hl);
+				break;
+			}
+		},
+		newPlotEventHandler: function() {
+			
+			var _ = this;
+			
+			var dialog = this._workingArea.find("div#analysis-step-new-plot-dialog").clone();
+			var plotTypeSelect = dialog.find("select#new-plot-type");
+			for(var type in plottypes) {
+				plotTypeSelect.append($("<option />").attr("value", type).text(plottypes[type].displayName));
+			}
+			
+			console.log("initialized plot type select");
+			
+			var optionsContainer = dialog.find("div#new-plot-options");
+			var plotCallback = undefined;
+			
+			plotTypeSelect.change(function() {
+				// find current selection and render options
+				var plotType = $(this).find("option:selected").val();
+				var plotClassName = (plotType != "empty" ? plottypes[plotType].classname : "empty");
+				
+				// do nothing if "empty" is selected
+				if(plotClassName == "empty") return;
+				
+				plotCallback = window[plotClassName].renderPlotCreateOptions(optionsContainer);
+				
+				optionsContainer.find("select.axis").each(function() {
+					var axesSelect = $(this);
+					this._headers.forEach(function(item, index) {
+						$("<option />").val(item).text(item).appendTo(axesSelect);
+					});
+				});
+			});
+			
+			dialog.dialog({
+				modal: true,
+				buttons: {
+					"Create plot": function() {
+						var plotTitle = dialog.find("input#new-plot-title").val();
+						var plotType = plotTypeSelect.find("option:selected").val();
+						
+						if(plotType == "empty") return;
+						
+						var plotOptions = {
+							title: plotTitle,
+							type: plotType,
+							width: 500,
+							height: 500,
+							top: 10,
+							left: 100
+						};
+						
+						plotCallback(plotOptions, optionsContainer);
+						
+						_._analysis.plots.push(plotOptions);
+						
+						$(this).dialog("close");
+						
+						_.createPlot(plotOptions);
+					},
+					"Cancel": function() {
+						$(this).dialog("close");
+					}
+				}
+			});
+		}
+	};
+})();
