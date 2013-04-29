@@ -35,6 +35,16 @@
 		this.draw();
 	};
 	
+	VISAN.Plots.Scatterplot.renderPlotCreateOptions = function(optionsContainer) {
+		optionsContainer.append($("<p />").text("Please select the X axis:")).append($("<select />").addClass("scatterplot-x").addClass("axis"));
+		optionsContainer.append($("<p />").text("Please select the Y axis:")).append($("<select />").addClass("scatterplot-y").addClass("axis"));
+		
+		return function(plotOptions, optionsContainer) {
+			plotOptions.xAxis = optionsContainer.find("select.scatterplot-x").val();
+			plotOptions.yAxis = optionsContainer.find("select.scatterplot-y").val();
+		};
+	};
+	
 	VISAN.Plots.Scatterplot.prototype = {
 		draw: function() {
 			var padding = this._padding;
