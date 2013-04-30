@@ -4,6 +4,7 @@ var VISAN = {}; (function() {
 		this._header = $("<div />");
 		this._workingArea = $("<div />");
 		this._workingAreaCache = [];
+		this._loadedModules = [];
 	};
 	
 	VISAN.Application.prototype = {
@@ -24,7 +25,7 @@ var VISAN = {}; (function() {
 			this._workingAreaCache.push({ title: this._header.find("h2").text(), workingArea: this._workingArea });
 			this._workingArea = $("<div />");
 			this._initializeEmptyWorkingArea();
-			new (moduleClass)(this._workingArea, this, options);
+			this._loadedModules.push(new (moduleClass)(this._workingArea, this, options));
 		},
 		title: function(title) {
 			this._header.find("h2").html(title);
