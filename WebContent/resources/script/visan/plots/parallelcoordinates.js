@@ -58,6 +58,7 @@
 			var context = this._shapeLayer.getContext("2d");
 			
 			dataManager.getData().forEach(function(cur) {
+				context.beginPath();
 				axes.forEach(function(item, index) {
 					var x = padding + index * posDelta;
 					var y = _._scales[item].get(cur[item]);
@@ -71,7 +72,7 @@
 				if(cur._selected) {
 					context.strokeStyle = "rgba(255, 0, 0, 1.0)";
 				} else {
-					context.strokeStyle = "rgba(255, 255, 255, 0.2)";
+					context.strokeStyle = "rgba(0, 0, 0, 0.2)";
 				}
 				context.stroke();
 			});
