@@ -2,14 +2,13 @@
 	VISAN.Modules.AnalysisStepModule = function(workingArea, visan, options) {
 		this._analysis = (typeof options == "undefined") ? {} : options;
 		this._analysis.plots = this._analysis.plots || [];
-		this._headers = this._analysis.data[0];
+		
+		this._dataManager = new VISAN.DataManager();
+		this._dataManager.load(this._analysis.data);
 		
 		this._application = visan;
 		this._workingArea = workingArea;
 		this._analysisWorkingArea = undefined;
-		
-		this._dataManager = new VISAN.DataManager();
-		this._dataManager.load(this._analysis.data);
 		
 		this._plotObjects = [];
 		this._highlightObjects = [];
@@ -32,7 +31,7 @@
 				_.createPlot(plotOptions);
 			});
 			
-			_._workingArea.find("button#analysis-step-new-plot").button().click(_.newPlotEventHandler);
+			_._workingArea.find("button#analysis-step-new-plot").button().click($.proxy(_.newPlotEventHandler, _));
 		});
 	};
 	
@@ -41,7 +40,7 @@
 			var plotDialog = $("<div />").attr("title", plotOptions.title);
 			plotDialog.appendTo(this._workingArea);
 			
-			this._plotObjects.push(new (plottypes[plotOptions.type].classname)(plotOptions, plotDialog, this._dataManager, this._application));
+			this._plotObjects.push(new (plottypes[plotOptions.type].classname)(plotOptions, plotDialog, this, this._application));
 			
 			var top = 0, left = 0;
 			if(plotOptions.top) {
@@ -62,9 +61,10 @@
 				}
 			});
 			
-			console.log(plotDialog.dialog("option", "position"));
+			// console.log(plotDialog.dialog("option", "position"));
 		},
 		createHighlight: function(highlightOptions) {
+			console.log(highlightOptions);
 			switch(highlightOptions.type) {
 			case "selection":
 				var hl = new VISAN.Highlight.Selection(highlightOptions, this._dataManager);
@@ -96,11 +96,12 @@
 				// do nothing if "empty" is selected
 				if(plotClassName == "empty") return;
 				
-				plotCallback = window[plotClassName].renderPlotCreateOptions(optionsContainer);
+				optionsContainer.empty();
+				plotCallback = (plotClassName).renderPlotCreateOptions(optionsContainer);
 				
 				optionsContainer.find("select.axis").each(function() {
 					var axesSelect = $(this);
-					this._headers.forEach(function(item, index) {
+					_._dataManager._columns.forEach(function(item, index) {
 						$("<option />").val(item).text(item).appendTo(axesSelect);
 					});
 				});
@@ -136,6 +137,11 @@
 						$(this).dialog("close");
 					}
 				}
+			});
+		},
+		refreshPlots: function() {
+			this._plotObjects.forEach(function(plotObj) {
+				plotObj.draw();
 			});
 		}
 	};

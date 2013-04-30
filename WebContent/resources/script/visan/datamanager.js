@@ -7,13 +7,15 @@
 	
 	VISAN.DataManager.prototype = {
 		load: function(jsonArray) {
+			var _ = this;
+			
 			if(jsonArray.length == 0) return;
 
 			var headers = jsonArray[0];
 
-			for(var h in headers) {
-				if(h != "_shapes") this._columns.push(h);
-			}
+			headers.forEach(function(header) {
+				if(header != "_shapes") _._columns.push(header);
+			});
 			
 			this._data = jsonArray.splice(1);
 

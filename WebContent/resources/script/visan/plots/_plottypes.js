@@ -5,6 +5,10 @@ var plottypes = {
 	},
 	"histogram": {
 		displayName: "Histogram",
-		classname: histogramPlot
+		classname: VISAN.Plots.Histogram
+	},
+	"parallel_coordinates": {
+		displayName: "Parallel coordinates",
+		classname: VISAN.Plots.ParallelCoordinates
 	}
 };
