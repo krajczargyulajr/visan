@@ -75,8 +75,18 @@ var VISAN = {}; (function() {
 		 * @returns {Number} The mapped value of number on the scale of range
 		 */
 		get: function(number) {
-			var num = this._range[0] + number * this._ratio;
+			var num = this._range[0] + (number - this._domain[0]) * this._ratio;
 			if(this._debug) { console.log("[V.Scale] Number: " + num); }
+			return num;
+		},
+		/** 
+		 * Map {number} from range to domain. This is essentially a helper for calculating the real value of displayed values. 
+		 * @param {Number} number The number on the scale of range
+		 * @returns {Number} The reverse mapped value of number on the scale of domain
+		 */
+		getReverse: function(number) {
+			var num = this._domain[0] + (number - this._range[0]) / this._ratio;
+			if(this._debug) { console.log("[V.Scale] Reversed number: " + num); }
 			return num;
 		},
 		/**
@@ -203,6 +213,19 @@ var VISAN = {}; (function() {
 			});
 			
 			if(selected) console.log("[V.H.Selection] Selected: " + selected);
+		}
+	};
+})();
+
+(function() {
+	VISAN.Highlight.ColorBrush = function(mapFunction, dataManager) {
+		this._callback = mapFunction;
+		this._dataManager = dataManager;
+	};
+	
+	VISAN.Highlight.ColorBrush.prototype = {
+		highlight: function() {
+			this._dataManager.getData().forEach(mapFunction);
 		}
 	};
 })();
