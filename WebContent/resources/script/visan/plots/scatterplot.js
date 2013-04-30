@@ -1,11 +1,21 @@
 (function() {
-	VISAN.Plots.Scatterplot = function(options, container, dataManager, visan) {
-		this._padding = 20;
+	VISAN.Plots.Scatterplot = function(options, container, stepModule, visan) {
+		this._stepModule = stepModule;
+		this._padding = 25;
 		
 		// get axes
 		this._xAxis = options.xAxis;
 		this._yAxis = options.yAxis;
 		
+		this._scXScale = new VISAN.Scale({
+			range: [this._padding, 500 - this._padding],
+			domain: [0, 300]
+		});
+		this._scYScale = new VISAN.Scale({
+			range: [500 - this._padding, this._padding],
+			domain: [0, 300]
+		});
+
 		// render canvas
 		this._stage = new Kinetic.Stage({
 			container: container.get(0),
@@ -27,10 +37,28 @@
 		this._stage.add(this._axisLayer);
 		this._stage.add(this._selectionLayer);
 		
-		var dataDimension1 = dataManager.getDimension(function(d) { return d[this._xAxis]; });
-		var dataDimension2 = dataManager.getDimension(function(d) { return d[this._yAxis]; });
+		this._dataManager = stepModule._dataManager;
+		this._dataDimension1 = this._dataManager.getDimension(function(d) { return d[this._xAxis]; });
+		this._dataDimension2 = this._dataManager.getDimension(function(d) { return d[this._yAxis]; });
 		
-		this._dataManager = dataManager;
+		this._selection = new Kinetic.Rect({
+			x: 0,
+			y: 0,
+			width: 0,
+			height: 0,
+			fill: 'transparent',
+			stroke: 'red',
+			strokeWidth: 2
+		});
+
+		this._selectionLayer.add(this._selection);
+
+		this._selecting = false;
+		
+		var stageContainer = this._stage.getContent();
+		stageContainer.addEventListener("mousedown", $.proxy(this.mousedownEventHandler, this));
+		stageContainer.addEventListener('mousemove', $.proxy(this.mouseMoveEventHandler, this));
+		stageContainer.addEventListener('mouseup', $.proxy(this.mouseUpEventHandler, this));
 		
 		this.draw();
 	};
@@ -49,19 +77,13 @@
 		draw: function() {
 			var padding = this._padding;
 			
-			var scXScale = new VISAN.Scale({
-				range: [padding, 500 - padding],
-				domain: [0, 300]
-			});
-			var scYScale = new VISAN.Scale({
-				range: [500 - padding, padding],
-				domain: [0, 300]
-			});
+			var scXScale = this._scXScale;
+			var scYScale = this._scYScale;
 
 			var context = this._shapeLayer.getContext("2d");
 			
-			new VISAN.Axis({ scale: scXScale, orientation: VISAN.AxisOrientation.BOTTOM, padding: 25 }).draw(this._axisLayer.getCanvas());
-			new VISAN.Axis({ scale: scYScale, orientation: VISAN.AxisOrientation.LEFT, padding: 25 }).draw(this._axisLayer.getCanvas());
+			new VISAN.Axis({ scale: scXScale, orientation: VISAN.AxisOrientation.BOTTOM, padding: padding }).draw(this._axisLayer.getCanvas());
+			new VISAN.Axis({ scale: scYScale, orientation: VISAN.AxisOrientation.LEFT, padding: padding }).draw(this._axisLayer.getCanvas());
 			
 			var _ = this;
 			this._dataManager.getData().forEach(function(cur) {
@@ -73,6 +95,48 @@
 				
 				context.fillRect(scXScale.get(cur[_._xAxis]), scYScale.get(cur[_._yAxis]), 2,2);
 			});
+		},
+		mousedownEventHandler: function(e) {
+			if(!this._selecting) {
+				this._selecting = true;
+				this._selection.setX(e.layerX);
+				this._selection.setY(e.layerY);
+				this._selectionLayer.draw();
+			}
+		},
+		mouseMoveEventHandler: function(e) {
+			if(this._selecting) {
+				/// TODO: this only works for drawing from top-left to bottom-right
+				this._selection.setWidth(e.layerX - this._selection.getX());
+				this._selection.setHeight(e.layerY - this._selection.getY());
+				this._selectionLayer.draw();
+			}
+		},
+		mouseUpEventHandler: function() {
+			this._selecting = false;
+
+			var scXScale = this._scXScale;
+			var scYScale = this._scYScale;
+			
+			var xFrom = scXScale.getReverse(this._selection.getX()), xTo = scXScale.getReverse(this._selection.getX() + this._selection.getWidth());
+			var yFrom = scYScale.getReverse(this._selection.getY()), yTo = scYScale.getReverse(this._selection.getY() + this._selection.getHeight());
+			if(xFrom > xTo) { var temp = xFrom; xFrom = xTo; xTo = temp; }
+			if(yFrom > yTo) { var temp = yFrom; yFrom = yTo; yTo = temp; }
+			
+			this._stepModule.createHighlight({
+				type: "selection",
+				axis1: {
+					axis: this._xAxis,
+					from: xFrom,
+					to: xTo
+				},
+				axis2: {
+					axis: this._yAxis,
+					from: yFrom,
+					to: yTo
+				}
+			});
+			this._stepModule.refreshPlots();
 		}
 	};
 })();
