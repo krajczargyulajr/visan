@@ -10,5 +10,9 @@ var plottypes = {
 	"parallel_coordinates": {
 		displayName: "Parallel coordinates",
 		classname: VISAN.Plots.ParallelCoordinates
+	},
+	"boxplot": {
+		displayName: "Boxplot",
+		classname: VISAN.Plots.Boxplot
 	}
 };

@@ -182,6 +182,14 @@ function startPageModule(workingArea, visan) {
 					left: 120,
 					height: 300,
 					width: 600
+				}, {
+					type: "boxplot",
+					title: "Demo boxplot",
+					axes: ["Column 0", "Column 3"],
+					top: 360,
+					left: 760,
+					height: 300,
+					width: 300
 				}],
 				highlights: [{
 					type: "selection",

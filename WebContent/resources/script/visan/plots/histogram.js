@@ -2,6 +2,8 @@
 	VISAN.Plots.Histogram = function(options, container, stepModule, visan) {
 		var _ = this;
 		
+		this._padding = 25;
+		
 		this._axis = options.axis;
 		this._binSize = options.binSize;
 		
@@ -9,26 +11,27 @@
 		this._dataDimension = dataManager.getDimension(function(d) { return d[_._axis]; });
 		this._histogramData = this._dataDimension.group(function(total) { return Math.floor(total / _._binSize); });
 		
+		this._stage = new Kinetic.Stage({
+			container: container.get(0),
+			width: options.width || 500,
+			height: options.height || 500
+		});
+		
 		var orderedData = this._histogramData.reduceCount().orderNatural();
 		this._orderedDataArray = orderedData.all();
 		this._orderedDataLength = this._orderedDataArray.length;
-		this._columnWidth = 300 / this._orderedDataLength - 2;
+		this._columnWidth = this._stage.getWidth() / this._orderedDataLength - 2;
 		var topHeight = orderedData.top(1)[0].value;
-
+		
 		this._heightScale = new VISAN.Scale({
 			domain: [0, topHeight],
-			range: [0, options.height]
-		});
-
-		var stage = new Kinetic.Stage({
-			container: container.get(0),
-			width: options.width,
-			height: options.height
+			range: [this._padding, this._stage.getHeight() - this._padding]
+			,debug: true
 		});
 
 		this._shapeLayer = new Kinetic.Layer();
 
-		stage.add(this._shapeLayer);
+		this._stage.add(this._shapeLayer);
 		
 		this.draw();
 	};
@@ -51,9 +54,9 @@
 
 				var rect = new Kinetic.Rect({
 					x: (i * (this._columnWidth + 2)),
-					y: 300 - curHeight,
+					y: this._stage.getHeight() - curHeight,
 					width: this._columnWidth,
-					height: curHeight,
+					height: curHeight - this._padding,
 					fill: 'grey',
 					stroke: 'black',
 					strokeWidth: 1
