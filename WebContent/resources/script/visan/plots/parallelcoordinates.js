@@ -12,8 +12,11 @@
 		
 		this._shapeLayer = new Kinetic.Layer();
 		this._axisLayer = new Kinetic.Layer();
+		this._selectionLayer = new Kinetic.Layer();
+		
 		this._stage.add(this._shapeLayer);
 		this._stage.add(this._axisLayer);
+		this._stage.add(this._selectionLayer);
 		
 		this._options = options;
 		this._stepModule = stepModule;
@@ -28,6 +31,25 @@
 				domain: [min, max]
 			});
 		});
+		
+		this._selection = new Kinetic.Rect({
+			x: 0,
+			y: 0,
+			width: 0,
+			height: 0,
+			fill: 'transparent',
+			stroke: 'red',
+			strokeWidth: 2
+		});
+
+		this._selectionLayer.add(this._selection);
+
+		this._selecting = false;
+		
+		var stageContainer = this._stage.getContent();
+		stageContainer.addEventListener("mousedown", $.proxy(this.mousedownEventHandler, this));
+		stageContainer.addEventListener('mousemove', $.proxy(this.mouseMoveEventHandler, this));
+		stageContainer.addEventListener('mouseup', $.proxy(this.mouseUpEventHandler, this));
 		
 		this.draw();
 	};
@@ -90,6 +112,60 @@
 				}
 				context.stroke();
 			});
+		},
+		mousedownEventHandler: function(e) {
+			if(!this._selecting) {
+				this._selecting = true;
+				this._selection.setX(e.layerX);
+				this._selection.setY(e.layerY);
+				this._selectionLayer.draw();
+			}
+		},
+		mouseMoveEventHandler: function(e) {
+			if(this._selecting) {
+				/// TODO: this only works for drawing from top-left to bottom-right
+				this._selection.setWidth(e.layerX - this._selection.getX());
+				this._selection.setHeight(e.layerY - this._selection.getY());
+				this._selectionLayer.draw();
+			}
+		},
+		mouseUpEventHandler: function() {
+			this._selecting = false;
+			
+			var scale = null;
+			
+			// find axis (if avail)
+			var axes = this._options.axes;
+			var selectedAxis = "";
+			var posDelta = (this._stage.getWidth() - 2 * this._padding) / (axes.length - 1);
+			for(var index = 0; index < axes.length; index++) {
+				var axisX = this._padding + index * posDelta;  
+				if(axisX >= this._selection.getX() && axisX < this._selection.getX() + this._selection.getWidth()) {
+					// this is it
+					selectedAxis = axes[index];
+					scale = this._scales[selectedAxis];
+					break;
+				}
+			}
+			
+			if(scale != null) {
+				var to = scale.getReverse(this._selection.getY()), from = scale.getReverse(this._selection.getY() + this._selection.getHeight());
+				console.log("[PC] [from, to]: [" + from + ", " + to + "]");
+				this._stepModule.createHighlight({
+					type: "selection",
+					axis1: {
+						axis: selectedAxis,
+						from: from,
+						to: to
+					}
+				});
+				
+				this._stepModule.refreshPlots();
+			}
+			
+			this._selection.setWidth(0);
+			this._selection.setHeight(0);
+			this._selectionLayer.draw();
 		}
 	};
 })();
