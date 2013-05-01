@@ -26,7 +26,7 @@
 		this._heightScale = new VISAN.Scale({
 			domain: [0, topHeight],
 			range: [this._padding, this._stage.getHeight() - this._padding]
-			,debug: true
+			// ,debug: true
 		});
 
 		this._shapeLayer = new Kinetic.Layer();
@@ -48,6 +48,8 @@
 	
 	VISAN.Plots.Histogram.prototype = {
 		draw: function() {
+			this._shapeLayer.clear();
+			
 			for(var i = 0; i < this._orderedDataLength; i++) {
 				var cur = this._orderedDataArray[i];
 				var curHeight = this._heightScale.get(cur.value);
