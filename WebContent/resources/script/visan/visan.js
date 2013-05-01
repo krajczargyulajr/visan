@@ -205,13 +205,18 @@ var VISAN = {}; (function() {
 		highlight: function() {
 			var _selection = this;
 			var selected = 0;
-			var axis1Dimension = this._dataManager.getDimension(function(d) { return d[_selection._axis1.axis]; }).filterRange([_selection._axis1.from, _selection._axis1.to]).top(Infinity);
-			this._dataManager.getDimension(function(d) { return d[_selection._axis2.axis]; }).filterRange([this._axis2.from, this._axis2.to]).top(Infinity).forEach(function(d) {
-				if(axis1Dimension.indexOf(d) != -1) {
+			var axis1Dimension = this._dataManager.getDimension(function(d) { return d[_selection._axis1.axis]; }).filterRange([_selection._axis1.from, _selection._axis1.to]);
+			var axis1DimensionData = axis1Dimension.top(Infinity);
+			var axis2Dimension = this._dataManager.getDimension(function(d) { return d[_selection._axis2.axis]; }).filterRange([this._axis2.from, this._axis2.to]);
+			axis2Dimension.top(Infinity).forEach(function(d) {
+				if(axis1DimensionData.indexOf(d) != -1) {
 					d._selected = true;
 					selected++;
 				}
 			});
+			
+			axis1Dimension.filterAll();
+			axis2Dimension.filterAll();
 			
 			if(selected) console.log("[V.H.Selection] Selected: " + selected);
 		}
