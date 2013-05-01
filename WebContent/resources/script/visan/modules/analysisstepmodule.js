@@ -61,14 +61,11 @@
 					of: this._analysisWorkingArea
 				}
 			});
-			
-			// console.log(plotDialog.dialog("option", "position"));
 		},
 		clearSelection: function() {
 			this._dataManager.getData().forEach(function(d) { d._selected = false; });
 		},
 		createHighlight: function(highlightOptions) {
-			console.log(highlightOptions);
 			switch(highlightOptions.type) {
 			case "selection":
 				if(this._selection != null) this.clearSelection();
@@ -76,7 +73,6 @@
 				var hl = new VISAN.Highlight.Selection(highlightOptions, this._dataManager);
 				hl.highlight();
 				this._selection = hl;
-				// this._highlightObjects.push(hl);
 				break;
 			}
 		},
