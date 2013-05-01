@@ -11,7 +11,9 @@
 		});
 		
 		this._shapeLayer = new Kinetic.Layer();
+		this._axisLayer = new Kinetic.Layer();
 		this._stage.add(this._shapeLayer);
+		this._stage.add(this._axisLayer);
 		
 		this._options = options;
 		this._stepModule = stepModule;
@@ -55,6 +57,19 @@
 			
 			this._shapeLayer.clear();
 			var context = this._shapeLayer.getContext("2d");
+			
+			// draw axes
+			axes.forEach(function(axis, index) {
+				new VISAN.Axis({
+					scale: _._scales[axis],
+					orientation: VISAN.AxisOrientation.CUSTOM_VERTICAL,
+					orientationOptions: {
+						x: padding + index * posDelta
+					},
+					padding: _._padding,
+					description: axis
+				}).draw(_._axisLayer.getCanvas());
+			});
 			
 			dataManager.getData().forEach(function(cur) {
 				context.beginPath();
