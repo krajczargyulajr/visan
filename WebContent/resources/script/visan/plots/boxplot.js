@@ -95,7 +95,6 @@
 				
 				
 				// sample minimum
-				console.log("Sample minimum");
 				var sampleMinimumScaled = scale.get(axisInfo.sampleMinimum); 
 				context.beginPath();
 				context.setLineDash(null);
@@ -105,7 +104,6 @@
 				context.stroke();
 				
 				// sample maximum
-				console.log("Sample maximum");
 				var sampleMaximumScaled = scale.get(axisInfo.sampleMaximum); 
 				context.beginPath();
 				context.setLineDash(null);
@@ -124,7 +122,6 @@
 				context.stroke();
 				
 				// draw the quartiles
-				console.log("Quartiles");
 				var firstQuartileScaled = scale.get(axisInfo.firstQuartile);
 				var thirdQuartileScaled = scale.get(axisInfo.thirdQuartile);
 				context.setLineDash(null);
@@ -133,7 +130,6 @@
 				context.strokeRect(x, firstQuartileScaled, plotWidth, thirdQuartileScaled - firstQuartileScaled);
 				
 				// draw median
-				console.log("Median");
 				var medianScaled = scale.get(axisInfo.median);
 				context.strokeStyle = "#000";
 				
@@ -145,6 +141,12 @@
 				context.moveTo(x, medianScaled + 1);
 				context.lineTo(x + plotWidth, medianScaled + 1);
 				context.stroke();
+				
+				 // print name
+				var textLength = context.measureText(axisInfo.axis);
+				context.textAlign = "hanging";
+				context.textBaseline = "alphabetic";
+				context.fillText(axisInfo.axis, middlePointX - textLength.width / 2, scale.get(min) + 10);
 			});
 		}
 	};
