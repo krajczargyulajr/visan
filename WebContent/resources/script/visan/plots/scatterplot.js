@@ -1,27 +1,37 @@
 (function() {
 	VISAN.Plots.Scatterplot = function(options, container, stepModule, visan) {
+		var _ = this;
 		this._stepModule = stepModule;
+		this._dataManager = stepModule._dataManager;
 		this._padding = 25;
 		
 		// get axes
 		this._xAxis = options.xAxis;
 		this._yAxis = options.yAxis;
 		
-		this._scXScale = new VISAN.Scale({
-			range: [this._padding, 500 - this._padding],
-			domain: [0, 300]
-		});
-		this._scYScale = new VISAN.Scale({
-			range: [500 - this._padding, this._padding],
-			domain: [0, 300]
-		});
-
+		this._dataDimension1 = this._dataManager.getDimension(function(d) { return d[_._xAxis]; }).filterAll();
+		this._dataDimension2 = this._dataManager.getDimension(function(d) { return d[_._yAxis]; }).filterAll();
+		var xMax = this._dataDimension1.top(1)[0][this._xAxis], xMin = this._dataDimension1.bottom(1)[0][this._xAxis];
+		var yMax = this._dataDimension2.top(1)[0][this._yAxis], yMin = this._dataDimension2.bottom(1)[0][this._yAxis];
+		console.log("[Sc] [xMin, xMax]: [" + xMin + ", " + xMax + "]");
+		console.log("[Sc] [yMin, yMax]: [" + yMin + ", " + yMax + "]");
+		
 		// render canvas
 		this._stage = new Kinetic.Stage({
 			container: container.get(0),
 			width: options.width || 500,
 			height: options.height || 500
 		});
+		
+		this._scXScale = new VISAN.Scale({
+			range: [this._padding, this._stage.getWidth() - this._padding],
+			domain: [xMin, xMax]
+		});
+		this._scYScale = new VISAN.Scale({
+			range: [this._stage.getHeight() - this._padding, this._padding],
+			domain: [yMin, yMax]
+		});
+
 		
 		this._shapeLayer = new Kinetic.Layer({
 			clearBeforeDraw: false
@@ -36,10 +46,6 @@
 		this._stage.add(this._shapeLayer);
 		this._stage.add(this._axisLayer);
 		this._stage.add(this._selectionLayer);
-		
-		this._dataManager = stepModule._dataManager;
-		this._dataDimension1 = this._dataManager.getDimension(function(d) { return d[this._xAxis]; });
-		this._dataDimension2 = this._dataManager.getDimension(function(d) { return d[this._yAxis]; });
 		
 		this._selection = new Kinetic.Rect({
 			x: 0,
@@ -137,6 +143,10 @@
 				}
 			});
 			this._stepModule.refreshPlots();
+			
+			this._selection.setWidth(0);
+			this._selection.setHeight(0);
+			this._selectionLayer.draw();
 		}
 	};
 })();
