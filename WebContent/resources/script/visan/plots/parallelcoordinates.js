@@ -23,8 +23,7 @@
 			var min = dim.bottom(1)[0][axis];
 			_._scales[axis] = new VISAN.Scale({
 				range: [_._stage.getHeight() - _._padding, _._padding],
-				domain: [min, max],
-				debug: true
+				domain: [min, max]
 			});
 		});
 		
@@ -59,9 +58,9 @@
 			
 			dataManager.getData().forEach(function(cur) {
 				context.beginPath();
-				axes.forEach(function(item, index) {
+				axes.forEach(function(axis, index) {
 					var x = padding + index * posDelta;
-					var y = _._scales[item].get(cur[item]);
+					var y = _._scales[axis].get(cur[axis]);
 					if(index == 0) {
 						context.moveTo(x, y);
 					} else {
