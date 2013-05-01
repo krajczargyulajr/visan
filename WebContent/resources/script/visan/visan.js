@@ -115,12 +115,15 @@ var VISAN = {}; (function() {
 		LEFT: 0,
 		RIGHT: 1,
 		TOP: 2,
-		BOTTOM: 3
+		BOTTOM: 3,
+		CUSTOM_HORIZONTAL: 4,
+		CUSTOM_VERTICAL: 5
 	};
 	
 	VISAN.Axis = function(options) {
 		this._scale = options.scale;
 		this._orientation = options.orientation; // left, right, top, bottom
+		this._orientationOptions = options.orientationOptions || {};
 		this._description = options.description;
 		this._padding = options.padding; 
 	};
@@ -184,6 +187,51 @@ var VISAN = {}; (function() {
 				context.textBaseline = "alphabetic";
 				context.fillText(to, canvasWidth - this._padding, canvasHeight - this._padding + 14);
 				context.fillText(from, this._padding, canvasHeight - this._padding + 14);
+				break;
+			case VISAN.AxisOrientation.CUSTOM_HORIZONTAL:
+				var y = this._orientationOptions.y;
+				context.beginPath();
+				context.moveTo(this._padding, y - 5);
+				context.lineTo(this._padding, y + 5);
+				context.stroke();
+				
+				context.beginPath();
+				context.moveTo(this._padding, y);
+				context.lineTo(canvasWidth - this._padding, y);
+				context.stroke();
+				
+				context.beginPath();
+				context.moveTo(canvasWidth - this._padding, y - 5);
+				context.lineTo(canvasWidth - this._padding, y + 5);
+				context.stroke();
+				
+				break;
+			case VISAN.AxisOrientation.CUSTOM_VERTICAL:
+				console.log("[AO] CUSTOM_VERTICAL");
+				var x = this._orientationOptions.x;
+				context.beginPath();
+				context.moveTo(x - 5, this._padding);
+				context.lineTo(x + 5, this._padding);
+				context.stroke();
+				
+				context.beginPath();
+				context.moveTo(x, this._padding);
+				context.lineTo(x, canvasHeight - this._padding);
+				context.stroke();
+				
+				context.beginPath();
+				context.moveTo(x - 5, canvasHeight - this._padding);
+				context.lineTo(x + 5, canvasHeight - this._padding);
+				context.stroke();
+				
+				context.textBaseline = "alphabetic";
+				var bottomCaption = from + " (" + this._description + ")";
+				var bottomMeasure = context.measureText(bottomCaption).width;
+				var topMeasure = context.measureText(to).width;
+				
+				context.fillText(bottomCaption, x - bottomMeasure / 2, canvasHeight - this._padding + 13);
+				context.fillText(to, x - topMeasure / 2, this._padding - 7);
+				
 				break;
 			}
 		}
