@@ -41,7 +41,7 @@ function createAnalysisModule(workingArea, visan) {
 				data.push(row);
 			}
 			
-			visan.goTo(analysisStepModule, { title: name, data: data });
+			visan.goTo(VISAN.Modules.AnalysisStepModule, { title: name, data: data, highlights: [], plots: [] });
 		});
 	});
 };
