@@ -97,7 +97,7 @@
 				// sample minimum
 				var sampleMinimumScaled = scale.get(axisInfo.sampleMinimum); 
 				context.beginPath();
-				context.setLineDash(null);
+				context.setLineDash([]);
 				context.moveTo(x, sampleMinimumScaled);
 				context.lineTo(x + plotWidth, sampleMinimumScaled);
 				context.strokeStyle = "#000";
@@ -106,7 +106,7 @@
 				// sample maximum
 				var sampleMaximumScaled = scale.get(axisInfo.sampleMaximum); 
 				context.beginPath();
-				context.setLineDash(null);
+				context.setLineDash([]);
 				context.moveTo(x, sampleMaximumScaled);
 				context.lineTo(x + plotWidth, sampleMaximumScaled);
 				context.strokeStyle = "#000";
@@ -124,7 +124,7 @@
 				// draw the quartiles
 				var firstQuartileScaled = scale.get(axisInfo.firstQuartile);
 				var thirdQuartileScaled = scale.get(axisInfo.thirdQuartile);
-				context.setLineDash(null);
+				context.setLineDash([]);
 				context.strokeStyle = "#000";
 				context.clearRect(x, firstQuartileScaled, plotWidth, thirdQuartileScaled - firstQuartileScaled);
 				context.strokeRect(x, firstQuartileScaled, plotWidth, thirdQuartileScaled - firstQuartileScaled);
