@@ -7,8 +7,6 @@
 		this._axis = options.axis;
 		this._binSize = options.binSize;
 		
-		// ??? - organize objects into the bins
-		
 		var dataManager = stepModule._dataManager;
 		this._dataDimension = dataManager.getDimension(function(d) { return d[_._axis]; });
 		var max = this._dataDimension.top(1)[0][_._axis];
@@ -16,7 +14,6 @@
 		
 		console.log("[Histogram]" + max + ", " + min);
 		
-		// var binCount = difference / this._binSize;
 		this._bins = [];
 		for(var binMin = min; binMin < max; binMin += this._binSize) {
 			this._bins.push({
@@ -39,23 +36,11 @@
 			if(bin.items.length > largestBinSize) largestBinSize = bin.items.length;
 		});
 		
-		// this._histogramData = this._dataDimension.group(function(total) { return Math.floor(total / _._binSize); });
-		
 		this._stage = new Kinetic.Stage({
 			container: container.get(0),
 			width: options.width || 500,
 			height: options.height || 500
 		});
-		
-		/*
-		var orderedData = this._histogramData; //.reduceCount().orderNatural();
-		this._orderedDataArray = orderedData.all();
-		this._orderedDataLength = this._orderedDataArray.length;
-		this._columnWidth = this._stage.getWidth() / this._orderedDataLength - 2;
-		var topGroup = orderedData.top(1);
-		console.log(topGroup);
-		var topHeight = orderedData.top(1)[0].value;
-		*/
 		
 		this._columnWidth = this._stage.getWidth() / this._bins.length - 2;
 		var topHeight = largestBinSize;
@@ -88,8 +73,7 @@
 			console.log(this._bins);
 			this._shapeLayer.clear();
 			this._shapeLayer.removeChildren();
-			// this._shapeLayer.
-			
+
 			console.log(this._bins.length);
 			for (var i = 0; i < this._bins.length; i++) {
 				
