@@ -7,9 +7,39 @@
 		this._axis = options.axis;
 		this._binSize = options.binSize;
 		
+		// ??? - organize objects into the bins
+		
 		var dataManager = stepModule._dataManager;
 		this._dataDimension = dataManager.getDimension(function(d) { return d[_._axis]; });
-		this._histogramData = this._dataDimension.group(function(total) { return Math.floor(total / _._binSize); });
+		var max = this._dataDimension.top(1)[0][_._axis];
+		var min = this._dataDimension.bottom(1)[0][_._axis];
+		
+		console.log("[Histogram]" + max + ", " + min);
+		
+		// var binCount = difference / this._binSize;
+		this._bins = [];
+		for(var binMin = min; binMin < max; binMin += this._binSize) {
+			this._bins.push({
+				min: binMin,
+				max: binMin + this._binSize,
+				items: []
+			});
+		}
+		
+		this._dataDimension.top(Infinity).forEach(function(item) {
+			_._bins.forEach(function(bin) {
+				if(item[_._axis] >= bin.min && item[_._axis] < bin.max) { // upper inclusive
+					bin.items.push(item);
+				}
+			});
+		});
+		
+		var largestBinSize = 0;
+		this._bins.forEach(function(bin) {
+			if(bin.items.length > largestBinSize) largestBinSize = bin.items.length;
+		});
+		
+		// this._histogramData = this._dataDimension.group(function(total) { return Math.floor(total / _._binSize); });
 		
 		this._stage = new Kinetic.Stage({
 			container: container.get(0),
@@ -17,11 +47,18 @@
 			height: options.height || 500
 		});
 		
-		var orderedData = this._histogramData.reduceCount().orderNatural();
+		/*
+		var orderedData = this._histogramData; //.reduceCount().orderNatural();
 		this._orderedDataArray = orderedData.all();
 		this._orderedDataLength = this._orderedDataArray.length;
 		this._columnWidth = this._stage.getWidth() / this._orderedDataLength - 2;
+		var topGroup = orderedData.top(1);
+		console.log(topGroup);
 		var topHeight = orderedData.top(1)[0].value;
+		*/
+		
+		this._columnWidth = this._stage.getWidth() / this._bins.length - 2;
+		var topHeight = largestBinSize;
 		
 		this._heightScale = new VISAN.Scale({
 			domain: [0, topHeight],
@@ -48,17 +85,44 @@
 	
 	VISAN.Plots.Histogram.prototype = {
 		draw: function() {
+			console.log(this._bins);
 			this._shapeLayer.clear();
+			this._shapeLayer.removeChildren();
+			// this._shapeLayer.
 			
-			for(var i = 0; i < this._orderedDataLength; i++) {
-				var cur = this._orderedDataArray[i];
-				var curHeight = this._heightScale.get(cur.value);
+			console.log(this._bins.length);
+			for (var i = 0; i < this._bins.length; i++) {
+				
+				var cur = this._bins[i];
+				
+				var selectedSize = cur.items.filter(function(item) {
+					return item._selected;
+				}).length;
+				
+				var curHeight = this._heightScale.get(cur.items.length);
+				var selHeight = this._heightScale.get(selectedSize);
+				console.log("[Histogram] Cur: " + curHeight + ", sel: " + selHeight);
+				
+				if(selectedSize > 0) {
+					console.log("hasSelected");
+					var selRect = new Kinetic.Rect({
+						x: (i * (this._columnWidth + 2)),
+						y: this._stage.getHeight() - (selHeight),
+						width: this._columnWidth,
+						height: selHeight - this._padding,
+						fill: 'red',
+						stroke: 'black',
+						strokeWidth: 1
+					});
+					
+					this._shapeLayer.add(selRect);
+				}
 
 				var rect = new Kinetic.Rect({
 					x: (i * (this._columnWidth + 2)),
 					y: this._stage.getHeight() - curHeight,
 					width: this._columnWidth,
-					height: curHeight - this._padding,
+					height: curHeight - selHeight,
 					fill: 'grey',
 					stroke: 'black',
 					strokeWidth: 1
