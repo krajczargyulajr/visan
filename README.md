@@ -12,6 +12,6 @@ To run, it needs to be configured on a standard Tomcat 7 installation in Eclipse
 
 --
 
-Live Demo
+Demo
 
 Avaiable at: http://krajczargyulajr.fw.hu/visan/
