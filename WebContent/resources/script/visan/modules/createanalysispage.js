@@ -43,5 +43,54 @@ function createAnalysisModule(workingArea, visan) {
 			
 			visan.goTo(VISAN.Modules.AnalysisStepModule, { title: name, data: data, highlights: [], plots: [] });
 		});
+		
+		workingArea.find("button#cp-data-button").click(function() {
+			var nameInput = $(this).parents("div.visan-working-area").find("input#create-analysis-name");
+			var name = nameInput.val();
+			
+			if(!name) {
+				alert("Specify a name please!");
+				return;
+			}
+			
+			var dataInput = $(this).parents("div#copy-and-paste-data-tab").find("textarea#cp-data");
+			var separatorInput = $(this).parents("div#copy-and-paste-data-tab").find("input[name='cp-data-separator']:checked");
+			var dataString = dataInput.val();
+			var separator = "";
+			var separatorType = separatorInput.val();
+			
+			switch(separatorType) {
+			case "csv":
+				separator = ",";
+				break;
+			case "tsv": 
+				separator = "\t";
+				break;
+			case "other":
+				separator = $(this).parents("div#copy-and-paste-data-tab").find("input#cp-data-separator-other-value").val();
+				break;
+			default:
+				separator = ",";
+			};
+			
+			var data = [];
+			var headers = dataString.split("\n")[0].split(separator);
+			data.push(headers);
+			dataString.split("\n").splice(1).forEach(function(rowString) {
+				var row = {};
+				var cells = rowString.split(separator);
+				if(cells.length != headers.length) {
+					console.warn("All rows must have the same number of columns as the header (" + rowString +")");
+				} else {
+					headers.forEach(function(header, index) {
+						row[header] = cells[index];
+					});
+					
+					data.push(row);
+				}
+			});
+			
+			visan.goTo(VISAN.Modules.AnalysisStepModule, { title: name, data: data, highlights: [], plots: [] });
+		});
 	});
 };

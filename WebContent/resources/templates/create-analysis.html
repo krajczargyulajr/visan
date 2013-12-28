@@ -13,7 +13,15 @@
 		<p>Functionality unavailable</p>
 	</div>
 	<div id="copy-and-paste-data-tab">
-		<p>Functionality unavailable</p>
+		<p>Use the box below to enter the data in a tabular format.</p>
+		<p><textarea id="cp-data"></textarea></p>
+		<p>Please select the separator character in your data:</p>
+		<p>
+			<input type="radio" name="cp-data-separator" value="csv" id="cp-data-separator-csv" /><label for="cp-data-separator-csv">Comma separated</label>
+			<input type="radio" name="cp-data-separator" value="tsv" id="cp-data-separator-tsv" /><label for="cp-data-separator-tsv">Tab separated</label>
+			<input type="radio" name="cp-data-separator" id="cp-data-separator-other" value="other" /><label for="cp-data-separator-other">Other: <input type="text" name="cp-data-separator-other-value" id="cp-data-separator-other-value" /></label>
+		</p>
+		<p><button id="cp-data-button">Create analysis</button></p>
 	</div>
 	<div id="random-generate-data-tab">
 		<p>Please select the number of rows and colums you would like to generate. Note: for performance reasons, generation is not allowed for datasets larger than 3 million rows and 30 columns.</p>
