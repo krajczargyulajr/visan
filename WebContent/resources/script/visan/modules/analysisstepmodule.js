@@ -33,6 +33,8 @@
 			});
 			
 			_._workingArea.find("button#analysis-step-new-plot").button().click($.proxy(_.newPlotEventHandler, _));
+			
+			_._workingArea.find("button#analysis-export-step").button().click($.proxy(_.exportEventHandler, _));
 		});
 	};
 	
@@ -141,6 +143,12 @@
 					}
 				}
 			});
+		},
+		closePlotEventHandler: function() {
+			
+		},
+		exportEventHandler: function() {
+			console.log(JSON.stringify(this._analysis));
 		},
 		refreshPlots: function() {
 			this._plotObjects.forEach(function(plotObj) {
