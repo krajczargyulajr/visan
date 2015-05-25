@@ -8,3 +8,5 @@
 build/log4j.xml
 
 .externalToolBuilders/org.eclipse.wst.jsdt.core.javascriptValidator.launch
+target/
+.settings/
